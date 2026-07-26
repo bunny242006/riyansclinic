@@ -62,9 +62,9 @@ app.post('/api/request-otp', (req, res) => {
                       <p>Your One-Time Password for Riyan's Clinic is: <strong>${otp}</strong></p>
                       <p>This code will expire in 10 minutes.</p>`;
         
-        const previewUrl = await sendMail(email, 'Riyan\'s Clinic - Login OTP', html);
+        sendMail(email, 'Riyan\'s Clinic - Login OTP', html);
         
-        res.json({ message: 'OTP sent to email', previewUrl: previewUrl });
+        res.json({ message: 'OTP sent to email' });
     });
 });
 
@@ -217,8 +217,8 @@ app.post('/api/admin/appointments/:token/status', authenticateAdmin, (req, res) 
                         <p>Please contact us for more information.</p>`;
             }
 
-            const previewUrl = await sendMail(appointment.user_email, subject, html);
-            res.json({ message: `Appointment ${status}`, previewUrl: previewUrl });
+            sendMail(appointment.user_email, subject, html);
+            res.json({ message: `Appointment ${status}` });
         });
     });
 });
@@ -425,7 +425,7 @@ app.post('/api/admin/video-appointments/:id/status', authenticateAdmin, (req, re
                     `;
                 }
 
-                await sendMail(appt.user_email, subject, html);
+                sendMail(appt.user_email, subject, html);
                 res.json({ message: `Video appointment ${status}`, meetLink });
             });
         }
@@ -490,7 +490,7 @@ app.post('/api/admin/video-appointments/:id/postpone', authenticateAdmin, (req, 
                             </div>
                         `;
 
-                        await sendMail(appt.user_email, subject, html);
+                        sendMail(appt.user_email, subject, html);
                         res.json({ message: 'Appointment postponed successfully' });
                     });
                 }
@@ -534,14 +534,8 @@ app.post('/api/admin/video-appointments/:id/notify-join', authenticateAdmin, (re
             </div>
         `;
 
-        try {
-            await sendMail(appt.user_email, subject, html);
-            res.json({ message: 'Patient notified successfully', meetLink: appt.meet_link });
-        } catch (error) {
-            console.error("Failed to send instant join email:", error);
-            // Even if email fails slightly, we still send success so the admin can join
-            res.json({ message: 'Failed to notify patient, but you can still join', meetLink: appt.meet_link });
-        }
+        sendMail(appt.user_email, subject, html).catch(error => console.error("Failed to send instant join email:", error));
+        res.json({ message: 'Patient notified successfully', meetLink: appt.meet_link });
     });
 });
 
