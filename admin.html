@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard - Riyan's Clinic</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="admin.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+
+<div id="adminLoginGate" class="admin-login-gate">
+    <div class="login-card">
+        <div class="logo">
+            <i class="fa-solid fa-user-shield"></i>
+        </div>
+        <h2>Admin Portal</h2>
+        <p>Sign in to manage appointments</p>
+        <form id="adminLoginForm">
+            <div class="input-group">
+                <i class="fa-solid fa-user"></i>
+                <input type="text" id="adminUsername" placeholder="Username" required>
+            </div>
+            <div class="input-group">
+                <i class="fa-solid fa-lock"></i>
+                <input type="password" id="adminPassword" placeholder="Password" required>
+            </div>
+            <button type="submit" class="btn-primary" id="adminLoginBtn">Login</button>
+        </form>
+    </div>
+</div>
+
+<div id="adminDashboard" class="admin-dashboard hidden">
+    <nav class="admin-nav">
+        <div class="nav-brand">
+            <i class="fa-solid fa-stethoscope"></i> Riyan's Clinic Admin
+        </div>
+        <div class="nav-links">
+            <button class="nav-btn active" onclick="switchTab('appointmentsTab')"><i class="fa-solid fa-calendar-check"></i> Appointments</button>
+            <button class="nav-btn" onclick="switchTab('blockedDatesTab')"><i class="fa-solid fa-calendar-times"></i> Block Dates</button>
+            <button class="nav-btn" onclick="switchTab('videoSlotsTab')"><i class="fa-solid fa-video"></i> Video Slots</button>
+            <button class="nav-btn" onclick="switchTab('videoBookingsTab')"><i class="fa-solid fa-clipboard-list"></i> Video Bookings</button>
+            <button class="nav-btn logout-btn" onclick="adminLogout()"><i class="fa-solid fa-right-from-bracket"></i> Logout</button>
+        </div>
+    </nav>
+
+    <main class="admin-main">
+        <!-- Appointments Tab -->
+        <div id="appointmentsTab" class="tab-content active">
+            <div class="header-action">
+                <h2>Manage Appointments</h2>
+                <button class="btn-secondary" onclick="fetchAppointments()"><i class="fa-solid fa-rotate-right"></i> Refresh</button>
+            </div>
+            <div class="table-container">
+                <table class="admin-table">
+                    <thead>
+                        <tr>
+                            <th>Token</th>
+                            <th>Patient Name</th>
+                            <th>Doctor</th>
+                            <th>Date & Time</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="appointmentsTableBody">
+                        <!-- Fetched dynamically -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Block Dates Tab -->
+        <div id="blockedDatesTab" class="tab-content hidden">
+            <h2>Block Doctor Availability</h2>
+            <div class="block-form-card">
+                <form id="blockDateForm">
+                    <div class="form-row">
+                        <div class="input-group">
+                            <label>Select Doctor</label>
+                            <select id="blockDoctor" required>
+                                <option value="Dr. Mahalakshmi Peruri">Dr. Mahalakshmi Peruri</option>
+                            </select>
+                        </div>
+                        <div class="input-group">
+                            <label>Start Date</label>
+                            <input type="date" id="blockStartDate" required>
+                        </div>
+                        <div class="input-group">
+                            <label>End Date</label>
+                            <input type="date" id="blockEndDate" required>
+                        </div>
+                    </div>
+                    <button type="submit" class="btn-primary">Block Dates</button>
+                </form>
+            </div>
+
+            <h3 style="margin-top: 30px;">Currently Blocked Dates</h3>
+            <div class="table-container">
+                <table class="admin-table">
+                    <thead>
+                        <tr>
+                            <th>Doctor</th>
+                            <th>Start Date</th>
+                            <th>End Date</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody id="blockedDatesTableBody">
+                        <!-- Fetched dynamically -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Video Slots Tab -->
+        <div id="videoSlotsTab" class="tab-content hidden">
+            <div class="header-action">
+                <h2><i class="fa-solid fa-video" style="color:#2f7fe0;"></i> Manage Video Call Slots</h2>
+                <button class="btn-secondary" onclick="fetchVideoSlots()"><i class="fa-solid fa-rotate-right"></i> Refresh</button>
+            </div>
+
+            <div class="block-form-card" style="margin-bottom:30px;">
+                <h3 style="margin-bottom:16px;">Add New Available Slot</h3>
+                <form id="videoSlotForm">
+                    <div class="form-row">
+                        <div class="input-group">
+                            <label>Date</label>
+                            <input type="date" id="slotDate" required>
+                        </div>
+                        <div class="input-group">
+                            <label>Time</label>
+                            <input type="time" id="slotTime" required>
+                        </div>
+                        <div class="input-group">
+                            <label>Max Bookings</label>
+                            <input type="number" id="slotMaxBookings" value="1" min="1" max="10">
+                        </div>
+                    </div>
+                    <button type="submit" class="btn-primary"><i class="fa-solid fa-plus"></i> Add Slot</button>
+                </form>
+            </div>
+
+            <h3>Current Video Slots</h3>
+            <div class="table-container">
+                <table class="admin-table">
+                    <thead>
+                        <tr>
+                            <th>Date</th>
+                            <th>Time</th>
+                            <th>Max Bookings</th>
+                            <th>Booked</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody id="videoSlotsTableBody">
+                        <!-- Fetched dynamically -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Video Bookings Tab -->
+        <div id="videoBookingsTab" class="tab-content hidden">
+            <div class="header-action">
+                <h2><i class="fa-solid fa-clipboard-list" style="color:#2f7fe0;"></i> Video Consultation Requests</h2>
+                <button class="btn-secondary" onclick="fetchVideoAppointments()"><i class="fa-solid fa-rotate-right"></i> Refresh</button>
+            </div>
+            <div class="table-container">
+                <table class="admin-table">
+                    <thead>
+                        <tr>
+                            <th>Token</th>
+                            <th>Patient</th>
+                            <th>Date &amp; Time</th>
+                            <th>Symptoms</th>
+                            <th>Status</th>
+                            <th>Meet Link</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="videoAppointmentsTableBody">
+                        <!-- Fetched dynamically -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+    </main>
+</div>
+
+<!-- Postpone Modal -->
+<div id="postponeModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); z-index:9999; justify-content:center; align-items:center;">
+    <div style="background:var(--card-bg); padding:30px; border-radius:12px; width:400px; box-shadow:0 10px 30px rgba(0,0,0,0.2);">
+        <h3 style="margin-bottom:15px; color:var(--primary);"><i class="fa-solid fa-clock-rotate-left"></i> Postpone Consultation</h3>
+        <p style="margin-bottom:20px; font-size:14px; color:var(--text-light);">Select a new available slot. The patient will be notified via email.</p>
+        
+        <form id="postponeForm" onsubmit="submitPostpone(event)">
+            <input type="hidden" id="postponeApptId">
+            <div class="input-group" style="margin-bottom:20px;">
+                <label>New Slot</label>
+                <select id="postponeNewSlot" required style="width:100%; padding:10px; border:1px solid var(--border-color); border-radius:6px; background:var(--bg-color); color:var(--text-dark);">
+                    <!-- Options populated via JS -->
+                </select>
+            </div>
+            <div style="display:flex; justify-content:flex-end; gap:10px;">
+                <button type="button" class="btn-secondary" onclick="closePostponeModal()">Cancel</button>
+                <button type="submit" class="btn-primary" id="postponeSubmitBtn">Confirm Postpone</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script src="admin.js"></script>
+</body>
+</html>

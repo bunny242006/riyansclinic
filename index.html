@@ -1,0 +1,677 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Riyan's Clinic | Quality Care & Online Consultation</title>
+    <meta name="description" content="Riyan's Clinic provides state-of-the-art healthcare with expert doctors, 24/7 emergency services, and instant online consultations. Book your appointment online today.">
+    <meta name="theme-color" content="#0d6ea8">
+    
+    <!-- Stylesheets -->
+    <link rel="stylesheet" href="style.css">
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- FontAwesome for Premium Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+
+    <!-- Splash Screen -->
+    <div id="splashScreen" class="splash-screen">
+        <div class="splash-content">
+            <div class="splash-logo-wrapper">
+                <img src="assets/logo.png" alt="Derma Plus Logo" class="splash-logo">
+            </div>
+            <h1 class="splash-title">DERMA PLUS</h1>
+            <p class="splash-subtitle">Premium Skin & Hair Care</p>
+            <div class="splash-loader-bar">
+                <div class="splash-progress"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Login Screen -->
+    <div id="loginScreen" class="login-screen hidden">
+        <div class="login-background"></div>
+        <div class="login-container">
+            <div class="login-card">
+                <div class="login-logo-wrapper">
+                    <img src="assets/logo.png" alt="Derma Plus Logo" class="login-card-logo">
+                </div>
+                <h2>Welcome to Derma Plus</h2>
+                <p>Access your skin health portal and book expert consultations</p>
+                
+                <button id="emailSignInBtn" class="btn-google-signin" onclick="openEmailAuth()" style="background-color: #f1f5f9; color: #333; border: 1px solid #cbd5e1; justify-content: center;">
+                    <i class="fa-solid fa-envelope" style="font-size: 1.2rem; margin-right: 10px; color: #1e3c72;"></i>
+                    <span>Sign in with Email</span>
+                </button>
+                
+                <div class="login-card-footer">
+                    <p><i class="fa-solid fa-shield-halved"></i> Secure OTP Authentication</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Email Auth Modal -->
+    <div id="emailAuthModal" class="google-modal-overlay hidden">
+        <div class="google-modal">
+            <div class="google-modal-header">
+                <i class="fa-solid fa-envelope" style="font-size: 2.5rem; color: #1e3c72; margin-bottom: 10px;"></i>
+                <h3>Sign in</h3>
+                <p>to continue to <strong>Derma Plus</strong></p>
+            </div>
+            
+            <form id="otpRequestForm" onsubmit="handleOtpRequest(event)" class="custom-email-form">
+                <input type="email" id="authEmail" placeholder="Email Address (e.g. name@example.com)" required>
+                <div class="form-actions">
+                    <button type="button" class="btn-cancel" onclick="closeEmailAuth()">Cancel</button>
+                    <button type="submit" class="btn-submit-google" id="requestOtpBtn">Send OTP</button>
+                </div>
+            </form>
+
+            <form id="otpVerifyForm" onsubmit="handleOtpVerify(event)" class="custom-email-form hidden" style="margin-top: 15px;">
+                <p style="text-align: left; font-size: 0.9rem; margin-bottom: 10px; color: #1e3c72;">Enter the OTP sent to your email.</p>
+                <input type="text" id="authOtp" placeholder="6-digit OTP" required maxlength="6">
+                <div class="form-actions">
+                    <button type="button" class="btn-cancel" onclick="resetEmailAuth()">Back</button>
+                    <button type="submit" class="btn-submit-google" id="verifyOtpBtn">Verify OTP</button>
+                </div>
+            </form>
+            
+            <div class="google-modal-footer">
+                <p>By signing in, you agree to receive appointment notifications to your email address.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Application Container -->
+    <div id="appContainer" class="app-container hidden">
+
+    <!-- Header & Navigation -->
+    <header class="navbar-header">
+        <nav class="nav-container">
+            <div class="logo">
+                <img src="assets/logo.png" alt="Riyan's Clinic Logo" class="logo-img">
+                <h2><span>RIYAN'S CLINIC</span></h2>
+            </div>
+            
+            <div class="nav-menu" id="navMenu">
+                <a href="#home" class="nav-link active"><i class="fa-solid fa-house"></i> Home</a>
+                <a href="#doctors" class="nav-link"><i class="fa-solid fa-user-doctor"></i> Doctor</a>
+                <a href="#gallery" class="nav-link"><i class="fa-solid fa-images"></i> Gallery</a>
+                <a href="#education" class="nav-link"><i class="fa-solid fa-book-medical"></i> Skin Health</a>
+                <a href="#booking" class="nav-link"><i class="fa-solid fa-calendar-check"></i> Appointment</a>
+                <a href="#consultation" class="nav-link"><i class="fa-solid fa-video"></i> Consultation</a>
+                <a href="#contact" class="nav-link"><i class="fa-solid fa-envelope"></i> Contact</a>
+                <a href="admin.html" class="nav-link admin-portal-link" target="_blank"><i class="fa-solid fa-user-shield"></i> Admin</a>
+            </div>
+
+            <div class="nav-actions">
+                <!-- Theme Toggle Button -->
+                <button id="themeToggle" class="theme-btn" aria-label="Toggle Dark Mode">
+                    <i class="fa-solid fa-moon"></i>
+                </button>
+                
+                <!-- User Profile Menu -->
+                <div class="user-profile-menu" id="userProfileMenu" style="display: none;">
+                    <button class="avatar-btn" id="avatarBtn" onclick="toggleProfileDropdown()" aria-label="User Profile">
+                        <img src="" alt="Avatar" id="userAvatar" class="user-avatar">
+                    </button>
+                    <div class="profile-dropdown" id="profileDropdown">
+                        <div class="profile-header">
+                            <h4 id="profileName">User Name</h4>
+                            <p id="profileEmail">user@gmail.com</p>
+                        </div>
+                        <hr class="profile-divider">
+                        <button onclick="handleSignOut()" class="btn-signout">
+                            <i class="fa-solid fa-right-from-bracket"></i> Sign Out
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Hamburger Menu for Mobile -->
+                <button class="hamburger" id="hamburger" aria-label="Toggle Menu">
+                    <i class="fa-solid fa-bars"></i>
+                </button>
+            </div>
+        </nav>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero-section" id="home">
+        <div class="hero-overlay"></div>
+        <div class="hero-content">
+            <span class="hero-badge"><i class="fa-solid fa-shield-halved"></i> Trust & Compassionate Care</span>
+            <h1>Your Health Is <br><span class="highlight">Our Priority</span></h1>
+            <p>
+                Access world-class healthcare from the comfort of your home. Connect with our expert doctor or request rapid online consultations.
+            </p>
+            <div class="hero-buttons">
+                <button onclick="scrollToBooking()" class="btn btn-primary">
+                    <i class="fa-solid fa-calendar-plus"></i> Book Appointment
+                </button>
+                <a href="tel:07995557339" class="btn btn-secondary">
+                    <i class="fa-solid fa-phone"></i> Call Clinic
+                </a>
+            </div>
+        </div>
+        <div class="hero-graphics">
+            <div class="hero-card hero-card-1">
+                <i class="fa-solid fa-user-doctor"></i>
+                <div>
+                    <h4>Specialist Care</h4>
+                    <p>Always available</p>
+                </div>
+            </div>
+            <div class="hero-card hero-card-2" onclick="scrollToBooking()" style="cursor:pointer;">
+                <i class="fa-solid fa-clock"></i>
+                <div>
+                    <h4>24/7 Online Booking</h4>
+                    <p>Book anytime, anywhere</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Doctor Section -->
+    <section id="doctors" class="doctors-section">
+        <div class="section-header reveal">
+            <span class="section-tag">Our Specialist</span>
+            <h2>Our Doctor</h2>
+            <p>Book a consultation in just a few clicks.</p>
+        </div>
+
+        <div class="doctor-container reveal reveal-scale">
+            
+            <div class="doctor-card" data-doctor="Dr. Mahalakshmi Peruri">
+                <div class="doctor-image-wrapper">
+                    <img src="assets/madam.jpg" alt="Dr. Mahalakshmi Peruri">
+                    <div class="doctor-overlay">
+                        <button onclick="bookDoctor('Dr. Mahalakshmi Peruri')" class="btn-card-book" id="book-btn-Dr. Mahalakshmi Peruri">Book Slot</button>
+                    </div>
+                </div>
+                <div class="doctor-details">
+                    <span class="specialty-badge"><i class="fa-solid fa-droplet"></i> Skin & Hair Specialist</span>
+                    <h3>Dr. Mahalakshmi Peruri</h3>
+                    <p class="timing"><i class="fa-regular fa-clock"></i> 10:00 AM - 01:30 PM & 06:00 PM - 09:00 PM</p>
+                    <span class="available-badge available" id="availability-Dr. Mahalakshmi Peruri"><i class="fa-solid fa-circle-check"></i> Available Today</span>
+                </div>
+            </div>
+
+            </div>
+    </section>
+
+    <!-- Gallery Section -->
+    <section id="gallery" class="gallery-section">
+        <div class="section-header reveal">
+            <span class="section-tag">Gallery</span>
+            <h2>Our Clinic & Treatment Stages</h2>
+            <p>Explore our state-of-the-art clinic and track typical patient treatment progress.</p>
+        </div>
+        
+        <div class="gallery-tabs">
+            <button class="gallery-tab-btn active" onclick="filterGallery('clinic')"><i class="fa-solid fa-clinic-medical"></i> Our Clinic</button>
+            <button class="gallery-tab-btn" onclick="filterGallery('stages')"><i class="fa-solid fa-chart-line"></i> Treatment Stages</button>
+        </div>
+
+        <div class="gallery-grid reveal-stagger" id="galleryGrid">
+            <!-- Clinic Images -->
+            <div class="gallery-item clinic-item" onclick="openLightbox('assets/reception.jpg')">
+                <div class="gallery-img-container">
+                    <img src="assets/reception.jpg" alt="Clinic Reception">
+                </div>
+                <div class="gallery-overlay-icon">
+                    <i class="fa-solid fa-magnifying-glass-plus"></i>
+                </div>
+                <div class="gallery-caption">Clinic Reception</div>
+            </div>
+            <div class="gallery-item clinic-item" onclick="openLightbox('assets/doctor%20cabin.jpg')">
+                <div class="gallery-img-container">
+                    <img src="assets/doctor%20cabin.jpg" alt="Doctor's Cabin">
+                </div>
+                <div class="gallery-overlay-icon">
+                    <i class="fa-solid fa-magnifying-glass-plus"></i>
+                </div>
+                <div class="gallery-caption">Doctor's Cabin</div>
+            </div>
+            <div class="gallery-item clinic-item" onclick="openLightbox('assets/operation%20room.jpg')">
+                <div class="gallery-img-container">
+                    <img src="assets/operation%20room.jpg" alt="Operation Room">
+                </div>
+                <div class="gallery-overlay-icon">
+                    <i class="fa-solid fa-magnifying-glass-plus"></i>
+                </div>
+                <div class="gallery-caption">Operation Room</div>
+            </div>
+            <div class="gallery-item clinic-item" onclick="openLightbox('assets/equipment.jpg')">
+                <div class="gallery-img-container">
+                    <img src="assets/equipment.jpg" alt="Medical Equipment">
+                </div>
+                <div class="gallery-overlay-icon">
+                    <i class="fa-solid fa-magnifying-glass-plus"></i>
+                </div>
+                <div class="gallery-caption">Medical Equipment</div>
+            </div>
+            <div class="gallery-item clinic-item" onclick="openLightbox('assets/board.jpg')">
+                <div class="gallery-img-container">
+                    <img src="assets/board.jpg" alt="Clinic Board">
+                </div>
+                <div class="gallery-overlay-icon">
+                    <i class="fa-solid fa-magnifying-glass-plus"></i>
+                </div>
+                <div class="gallery-caption">Clinic Board</div>
+            </div>
+            <div class="gallery-item clinic-item" onclick="openLightbox('assets/medical%20store.jpg')">
+                <div class="gallery-img-container">
+                    <img src="assets/medical%20store.jpg" alt="Medical Store">
+                </div>
+                <div class="gallery-overlay-icon">
+                    <i class="fa-solid fa-magnifying-glass-plus"></i>
+                </div>
+                <div class="gallery-caption">Medical Store</div>
+            </div>
+            
+
+            <!-- Treatment Stages Images -->
+            <div class="gallery-item stages-item hidden" onclick="openLightbox('assets/stage_1_irritation.png')">
+                <div class="gallery-img-container">
+                    <img src="assets/stage_1_irritation.png" alt="Stage 1: Active Concern">
+                </div>
+                <div class="gallery-overlay-icon">
+                    <i class="fa-solid fa-magnifying-glass-plus"></i>
+                </div>
+                <div class="gallery-caption">Stage 1: Active Concern & Inflammation</div>
+            </div>
+            <div class="gallery-item stages-item hidden" onclick="openLightbox('assets/stage_2_recovery.png')">
+                <div class="gallery-img-container">
+                    <img src="assets/stage_2_recovery.png" alt="Stage 2: Healing Progress">
+                </div>
+                <div class="gallery-overlay-icon">
+                    <i class="fa-solid fa-magnifying-glass-plus"></i>
+                </div>
+                <div class="gallery-caption">Stage 2: Soothing & Healing Progress</div>
+            </div>
+            <div class="gallery-item stages-item hidden" onclick="openLightbox('assets/stage_3_clear.png')">
+                <div class="gallery-img-container">
+                    <img src="assets/stage_3_clear.png" alt="Stage 3: Full Recovery">
+                </div>
+                <div class="gallery-overlay-icon">
+                    <i class="fa-solid fa-magnifying-glass-plus"></i>
+                </div>
+                <div class="gallery-caption">Stage 3: Cleared & Healthy Glowing Skin</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Skin Health & Education Section -->
+    <section id="education" class="education-section">
+        <div class="section-header reveal">
+            <span class="section-tag">Skin Education</span>
+            <h2>Skin Health Awareness & Care</h2>
+            <p>Empowering you with essential dermatologist insights, common skin/hair concerns, and preventative measures.</p>
+        </div>
+
+        <div class="education-grid reveal-stagger">
+            <!-- Common Skin Diseases Card -->
+            <div class="education-card">
+                <div class="education-image">
+                    <img src="assets/stage_1_irritation.png" alt="Common Skin Concerns">
+                </div>
+                <div class="education-content">
+                    <span class="edu-badge"><i class="fa-solid fa-virus"></i> Diseases & Prevention</span>
+                    <h3>Common Skin Concerns</h3>
+                    <ul>
+                        <li><strong>Acne Vulgaris:</strong> Prevent by cleansing twice daily with salicylic acid wash, avoiding picking, and using non-comedogenic cosmetics.</li>
+                        <li><strong>Psoriasis & Eczema:</strong> Manage flare-ups by moisturizing daily with ceramide creams, avoiding hot showers, and using gentle, fragrance-free body washes.</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Hair & Scalp Concerns Card -->
+            <div class="education-card">
+                <div class="education-image">
+                    <img src="assets/hair.jpg" alt="Hair & Scalp Health">
+                </div>
+                <div class="education-content">
+                    <span class="edu-badge hair-badge"><i class="fa-solid fa-scissors"></i> Hair & Scalp Care</span>
+                    <h3>Hair & Scalp Concerns</h3>
+                    <ul>
+                        <li><strong>Hair Fall & Alopecia:</strong> Prevent by consuming a balanced diet rich in iron, zinc, and protein, avoiding tight hairstyles, and minimizing heat-styling.</li>
+                        <li><strong>Dandruff & Itchiness:</strong> Prevent by washing scalp with anti-dandruff shampoo (containing zinc pyrithione or ketoconazole) and avoiding heavy hair oils.</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Sun & UV Protection Card -->
+            <div class="education-card">
+                <div class="education-image">
+                    <img src="assets/sun_protection.png" alt="Sun & UV Protection">
+                </div>
+                <div class="education-content">
+                    <span class="edu-badge sun-badge"><i class="fa-solid fa-sun"></i> Sun Safety</span>
+                    <h3>UV Protection Guide</h3>
+                    <ul>
+                        <li><strong>Broad-Spectrum Sunscreen:</strong> Apply SPF 30+ daily. Reapply every 2 hours when outdoors. This prevents premature aging and reduces skin cancer risk.</li>
+                        <li><strong>Physical UV Protection:</strong> Wear protective UV-blocking sunglasses, wide-brimmed hats, and seek shade during peak sunlight (10:00 AM - 04:00 PM).</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Daily Skin Wellness Card -->
+            <div class="education-card edu-card-hidden">
+                <div class="education-image">
+                    <img src="assets/stage_3_clear.png" alt="Daily Skin Wellness">
+                </div>
+                <div class="education-content">
+                    <span class="edu-badge wellness-badge"><i class="fa-solid fa-heart-pulse"></i> Daily Wellness</span>
+                    <h3>Daily Skin Wellness</h3>
+                    <ul>
+                        <li><strong>Skin Barrier Repair:</strong> Lock in hydration using hyaluronic acid and squalane. Avoid over-exfoliating with harsh physical scrubs.</li>
+                        <li><strong>Healthy Habits:</strong> Stay hydrated (2L+ water daily), prioritize 8 hours of sleep, and eat antioxidant-rich foods to promote natural radiance.</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="education-more-btn-container">
+            <button id="toggleEduBtn" class="btn btn-secondary" onclick="toggleMoreEducation()"><i class="fa-solid fa-chevron-down"></i> Show More Insights</button>
+        </div>
+
+        <!-- Dermatologist Consultation Callout -->
+        <div class="education-alert-banner">
+            <div class="alert-icon">
+                <i class="fa-solid fa-triangle-exclamation"></i>
+            </div>
+            <div class="alert-text">
+                <h4>When to Consult a Dermatologist</h4>
+                <p>While preventative skincare is highly beneficial, self-care alone may not be sufficient for clinical conditions. Please consult our dermatologist if you experience persistent irritation, worsening rashes, changes in moles, or chronic skin/hair concerns that do not improve.</p>
+            </div>
+            <div class="alert-action">
+                <button onclick="scrollToBooking()" class="btn btn-primary btn-alert-consult">Book Consultation</button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Booking Section -->
+    <section id="booking" class="booking-section">
+        <div class="booking-grid">
+            <div class="booking-intro">
+                <h2>Schedule an Appointment</h2>
+                <p>Fill out the form to request a physical or virtual appointment. The system will check the doctor's active schedule immediately.</p>
+                <div class="booking-tips">
+                    <div class="tip-item">
+                        <i class="fa-solid fa-clock-rotate-left"></i>
+                        <p>Appointments must match the doctor's office hours listed above.</p>
+                    </div>
+                    <div class="tip-item">
+                        <i class="fa-solid fa-mobile-screen-button"></i>
+                        <p>You will receive a unique Token ID and a WhatsApp booking link instantly.</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="booking-card">
+                <form id="appointmentForm" onsubmit="bookAppointment(event)">
+                    <div class="form-group-row">
+                        <div class="form-group">
+                            <label for="name"><i class="fa-solid fa-user"></i> Patient Name</label>
+                            <input type="text" id="name" placeholder="Full Name" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="phone"><i class="fa-solid fa-phone"></i> Phone Number</label>
+                            <input type="tel" id="phone" placeholder="10-Digit Mobile" required pattern="[0-9]{10,12}">
+                        </div>
+                    </div>
+
+                    <div class="form-group-row">
+                        <div class="form-group">
+                            <label for="age"><i class="fa-solid fa-cake-candles"></i> Age</label>
+                            <input type="number" id="age" placeholder="Age" min="1" max="120" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="doctor"><i class="fa-solid fa-user-doctor"></i> Select Specialist</label>
+                            <select id="doctor" onchange="updateSelectedDoctorHours()">
+                                <option value="Dr. Mahalakshmi Peruri">Dr. Mahalakshmi Peruri (Skin specialist)</option>
+                            
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-group-row">
+                        <div class="form-group">
+                            <label for="date"><i class="fa-solid fa-calendar-days"></i> Preferred Date</label>
+                            <input type="date" id="date" required>
+                            <small id="dateBlockedError" style="display:none; color:#e74c3c; margin-top:5px; font-weight:500;"></small>
+                        </div>
+                        <div class="form-group">
+                            <label for="time"><i class="fa-solid fa-clock"></i> Appointment Time</label>
+                            <input type="time" id="time" required>
+                            <small id="doctorHoursInfo" class="hours-info-text">Hours: 10:00 AM - 02:00 PM</small>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="symptoms"><i class="fa-solid fa-notes-medical"></i> Describe Symptoms</label>
+                        <textarea id="symptoms" rows="3" placeholder="Briefly describe the symptoms (e.g. skin rashes, itching, hair fall)..."></textarea>
+                    </div>
+
+                    <button type="submit" class="btn btn-submit">
+                        <i class="fa-solid fa-check-circle"></i> Confirm Booking
+                    </button>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <!-- Consultation Section — Video Call Booking -->
+    <section id="consultation" class="consult-section">
+        <div class="section-header reveal">
+            <span class="section-tag"><i class="fa-solid fa-video"></i> Tele-Consultation</span>
+            <h2>Online Video Consultation</h2>
+            <p>Can't visit in person? Book a secure video call with Dr. Mahalakshmi Peruri. Get your Google Meet link instantly after admin confirmation.</p>
+        </div>
+
+        <!-- How It Works Steps -->
+        <div class="video-steps reveal-stagger">
+            <div class="video-step">
+                <div class="step-icon"><i class="fa-solid fa-calendar-plus"></i></div>
+                <span class="step-num">1</span>
+                <p>Choose an available slot</p>
+            </div>
+            <div class="video-step-arrow"><i class="fa-solid fa-chevron-right"></i></div>
+            <div class="video-step">
+                <div class="step-icon"><i class="fa-solid fa-clock"></i></div>
+                <span class="step-num">2</span>
+                <p>Admin confirms &amp; sends Meet link</p>
+            </div>
+            <div class="video-step-arrow"><i class="fa-solid fa-chevron-right"></i></div>
+            <div class="video-step">
+                <div class="step-icon"><i class="fa-brands fa-google"></i></div>
+                <span class="step-num">3</span>
+                <p>Join video call on Google Meet</p>
+            </div>
+        </div>
+
+        <div class="video-booking-grid">
+            <!-- Available Slots Panel -->
+            <div class="video-slots-panel reveal reveal-left">
+                <h3><i class="fa-solid fa-calendar-check"></i> Available Slots</h3>
+                <div id="videoSlotsContainer">
+                    <div class="slots-loading"><i class="fa-solid fa-spinner fa-spin"></i> Loading available slots...</div>
+                </div>
+            </div>
+
+            <!-- Booking Form Panel -->
+            <div class="video-form-panel reveal reveal-right">
+                <h3><i class="fa-solid fa-user-plus"></i> Book Your Consultation</h3>
+                <form id="videoBookingForm" onsubmit="bookVideoConsultation(event)">
+                    <div class="form-group">
+                        <label><i class="fa-solid fa-user"></i> Patient Name</label>
+                        <input type="text" id="vcName" placeholder="Full Name" required>
+                    </div>
+                    <div class="form-group-row">
+                        <div class="form-group">
+                            <label><i class="fa-solid fa-phone"></i> Phone</label>
+                            <input type="tel" id="vcPhone" placeholder="10-digit mobile" required pattern="[0-9]{10,12}">
+                        </div>
+                        <div class="form-group">
+                            <label><i class="fa-solid fa-cake-candles"></i> Age</label>
+                            <input type="number" id="vcAge" placeholder="Age" min="1" max="120" required>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label><i class="fa-solid fa-calendar-days"></i> Selected Slot</label>
+                        <input type="text" id="vcSelectedSlot" placeholder="Please select a slot on the left" readonly required style="cursor:pointer;background:var(--card-bg);">
+                        <input type="hidden" id="vcSlotId">
+                    </div>
+                    <div class="form-group">
+                        <label><i class="fa-solid fa-notes-medical"></i> Symptoms / Concerns</label>
+                        <textarea id="vcSymptoms" rows="3" placeholder="Describe your skin/hair concerns briefly..."></textarea>
+                    </div>
+                    <button type="submit" class="btn btn-meet" id="vcSubmitBtn">
+                        <i class="fa-solid fa-video"></i> Request Video Consultation
+                    </button>
+                    <p class="vc-note"><i class="fa-solid fa-circle-info"></i> You must be logged in. A Google Meet link will be emailed to you after confirmation.</p>
+                </form>
+            </div>
+        </div>
+    </section>
+
+
+    <!-- Dashboard: My Bookings Section -->
+    <section class="dashboard-section" id="dashboard">
+        <div class="section-header">
+            <span class="section-tag">Patient Portal</span>
+            <h2>Your Appointments Dashboard</h2>
+            <p>View, track, or cancel your scheduled appointments below.</p>
+        </div>
+
+        <!-- Dashboard Tabs -->
+        <div class="dashboard-tabs">
+            <button class="dash-tab-btn active" onclick="switchDashTab('clinicTab')"><i class="fa-solid fa-hospital"></i> Clinic Appointments</button>
+            <button class="dash-tab-btn" onclick="switchDashTab('videoTab')"><i class="fa-solid fa-video"></i> Video Consultations</button>
+        </div>
+
+        <!-- Clinic Appointments -->
+        <div id="clinicTab" class="dash-tab-content">
+            <div class="dashboard-container">
+                <div id="noBookings" class="no-bookings-card">
+                    <i class="fa-solid fa-calendar-xmark no-bookings-icon"></i>
+                    <h4>No Scheduled Appointments</h4>
+                    <p>Use the booking form above to schedule your first medical appointment.</p>
+                </div>
+                <div id="bookingsList" class="bookings-grid-list" style="display: none;">
+                    <!-- Dynamically populated via JS -->
+                </div>
+            </div>
+        </div>
+
+        <!-- Video Consultations -->
+        <div id="videoTab" class="dash-tab-content hidden">
+            <div class="dashboard-container">
+                <div id="noVideoBookings" class="no-bookings-card">
+                    <i class="fa-solid fa-video-slash no-bookings-icon"></i>
+                    <h4>No Video Consultations</h4>
+                    <p>Use the consultation form above to book a video call.</p>
+                </div>
+                <div id="videoBookingsList" class="bookings-grid-list" style="display: none;">
+                    <!-- Dynamically populated via JS -->
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Emergency Section Removed -->
+
+    <!-- Contact Section -->
+    <section id="contact" class="contact-section">
+        <div class="contact-grid">
+            <div class="contact-details">
+                <span class="section-tag">Reach Us</span>
+                <h2>Contact Information</h2>
+                <p>Have questions? Reach out to us or locate our branch using the Google Map link below.</p>
+                
+                <div class="contact-list">
+                    <div class="contact-item">
+                        <i class="fa-solid fa-phone"></i>
+                        <div>
+                            <h5>General Inquiries</h5>
+                            <p>07995557339</p>
+                        </div>
+                    </div>
+                    <div class="contact-item">
+                        <i class="fa-brands fa-whatsapp whatsapp-icon"></i>
+                        <div>
+                            <h5>WhatsApp Helpdesk</h5>
+                            <p>07995557339</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="contact-map-card">
+                <div class="map-illustration">
+                    <i class="fa-solid fa-map-location-dot"></i>
+                    <h4>Clinic Complex</h4>
+                    <p>Dwarka Nagar, Visakhapatnam, Andhra Pradesh, India</p>
+                    <a href="https://maps.app.goo.gl/z8vVFB86hsEAZeaa8?g_st=awb" target="_blank" class="btn btn-location">
+                
+                        <i class="fa-solid fa-map-pin"></i> Open Location in Google Maps
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="footer-container">
+            <div class="footer-brand">
+                <h3>RIYAN'S CLINIC</h3>
+                <p>Providing exceptional healthcare services with empathy, trust, and advanced therapeutic technology.</p>
+            </div>
+            <div class="footer-links">
+                <h4>Quick Navigation</h4>
+                <a href="#home">Home</a>
+                <a href="#doctors">Doctor</a>
+                <a href="#gallery">Gallery</a>
+                <a href="#booking">Appointment</a>
+            </div>
+            <div class="footer-copy">
+                <p>&copy; 2026 Riyan's Clinic. All Rights Reserved. Patient safety is our primary pledge.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Custom Animated Modal Popup -->
+    <div id="customModal" class="modal-overlay">
+        <div class="modal-card">
+            <div id="modalHeader" class="modal-header">
+                <i class="fa-solid fa-circle-check modal-icon"></i>
+                <h3 id="modalTitle">Appointment Confirmed</h3>
+            </div>
+            <div class="modal-body" id="modalBody">
+                <!-- Dynamically written content -->
+            </div>
+            <div class="modal-footer">
+                <button onclick="closeModal()" class="btn btn-modal-close">Close</button>
+                <button id="modalActionBtn" class="btn btn-modal-action" style="display: none;">Go to WhatsApp</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Lightbox for Flyer Gallery -->
+    <div id="lightbox" class="lightbox-overlay" onclick="closeLightbox()">
+        <span class="lightbox-close">&times;</span>
+        <img id="lightboxImg" class="lightbox-content" src="" alt="Enlarged Flyer">
+    </div>
+
+    </div> <!-- Close appContainer -->
+
+    <!-- Scripts -->
+    <script src="script.js"></script>
+</body>
+</html>
