@@ -23,8 +23,8 @@ app.use(express.static(path.join(__dirname)));
 // Configure Gmail SMTP for sending real emails, forcing IPv4 to prevent ENETUNREACH errors on Render
 let transporter = nodemailer.createTransport({
     host: 'smtp.gmail.com',
-    port: 465,
-    secure: true,
+    port: 587,
+    secure: false, // Use STARTTLS on port 587
     auth: {
         user: process.env.EMAIL_USER,
         pass: process.env.EMAIL_PASS
