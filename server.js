@@ -58,6 +58,8 @@ app.post('/api/request-otp', (req, res) => {
     db.run("INSERT INTO otps (email, otp, expires_at) VALUES (?, ?, ?)", [email, otp, expiresAt], async function(err) {
         if (err) return res.status(500).json({ error: 'Database error' });
 
+        console.log(`[OTP DEBUG] Generated OTP for ${email}: ${otp}`);
+
         const html = `<h2>Your Login OTP</h2>
                       <p>Your One-Time Password for Riyan's Clinic is: <strong>${otp}</strong></p>
                       <p>This code will expire in 10 minutes.</p>`;
