@@ -43,7 +43,7 @@ async function sendMail(to, subject, html) {
     }
     try {
         const info = await transporter.sendMail({
-            from: '"Riyan\'s Clinic" <noreply@riyansclinic.com>',
+            from: `"Riyan's Clinic" <${process.env.EMAIL_USER || 'riyansclinic@gmail.com'}>`,
             to: to,
             subject: subject,
             html: html
