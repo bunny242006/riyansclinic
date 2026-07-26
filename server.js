@@ -223,6 +223,14 @@ app.post('/api/admin/appointments/:token/status', authenticateAdmin, (req, res) 
     });
 });
 
+app.delete('/api/admin/appointments/:token', authenticateAdmin, (req, res) => {
+    const token = req.params.token;
+    db.run("DELETE FROM appointments WHERE token = ?", [token], function(err) {
+        if (err) return res.status(500).json({ error: 'Database error' });
+        res.json({ message: 'Appointment deleted successfully' });
+    });
+});
+
 app.post('/api/admin/blocked-dates', authenticateAdmin, (req, res) => {
     const { doctor, start_date, end_date } = req.body;
     db.run("INSERT INTO blocked_dates (doctor, start_date, end_date) VALUES (?, ?, ?)", [doctor, start_date, end_date], function(err) {

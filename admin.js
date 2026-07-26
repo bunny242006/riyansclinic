@@ -80,6 +80,10 @@ async function fetchAppointments() {
                     <button class="action-btn btn-accept" onclick="updateAppointmentStatus('${apt.token}', 'accepted')"><i class="fa-solid fa-check"></i></button>
                     <button class="action-btn btn-reject" onclick="updateAppointmentStatus('${apt.token}', 'rejected')"><i class="fa-solid fa-xmark"></i></button>
                 `;
+            } else {
+                actionsHtml = `
+                    <button class="action-btn btn-reject" onclick="deleteAppointment('${apt.token}')" style="background-color: #e74c3c; color: white; border: none; padding: 6px 10px; border-radius: 4px; cursor: pointer;"><i class="fa-solid fa-trash"></i></button>
+                `;
             }
 
             tr.innerHTML = `
@@ -117,6 +121,27 @@ async function updateAppointmentStatus(token, status) {
         }
         
         fetchAppointments();
+    } catch (err) {
+        console.error(err);
+    }
+}
+
+async function deleteAppointment(token) {
+    if (!confirm(`Are you sure you want to completely DELETE this appointment? This cannot be undone.`)) return;
+
+    const authToken = localStorage.getItem('admin_token');
+    try {
+        const res = await fetch(`${API_BASE}/admin/appointments/${token}`, {
+            method: 'DELETE',
+            headers: { 
+                'Authorization': `Bearer ${authToken}`
+            }
+        });
+        if (res.ok) {
+            fetchAppointments();
+        } else {
+            alert('Failed to delete appointment');
+        }
     } catch (err) {
         console.error(err);
     }
