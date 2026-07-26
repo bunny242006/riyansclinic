@@ -15,13 +15,16 @@ app.use(cors());
 app.use(express.json());
 app.use(express.static(path.join(__dirname)));
 
-// Configure Gmail SMTP for sending real emails
+// Configure Gmail SMTP for sending real emails, forcing IPv4 to prevent ENETUNREACH errors on Render
 let transporter = nodemailer.createTransport({
-    service: 'gmail',
+    host: 'smtp.gmail.com',
+    port: 465,
+    secure: true,
     auth: {
         user: process.env.EMAIL_USER,
         pass: process.env.EMAIL_PASS
-    }
+    },
+    family: 4 // Force IPv4
 });
 
 // Helper function to send email
