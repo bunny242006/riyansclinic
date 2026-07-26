@@ -1,4 +1,6 @@
-const API_BASE = '/api';
+const API_BASE = window.location.origin.includes('github.io')
+    ? 'https://riyansclinic.onrender.com/api'
+    : '/api';
 
 document.addEventListener('DOMContentLoaded', () => {
     checkAdminAuth();
