@@ -1,3 +1,4 @@
+const API_BASE = '/api';
 
 const schedules = {
     "Dr. Mahalakshmi Peruri": {
@@ -53,7 +54,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
 async function fetchBlockedDates() {
     try {
-        const res = await fetch("http://localhost:3000/api/blocked-dates");
+        const res = await fetch(`${API_BASE}/blocked-dates`);
         blockedDatesConfig = await res.json();
         setupDateInputValidation();
         updateDoctorAvailability();
@@ -311,7 +312,7 @@ async function bookAppointment(e) {
     const payload = { user_email, patient_name: patientName, phone, age, doctor, date, time, symptoms };
 
     try {
-        const res = await fetch("http://localhost:3000/api/book", {
+        const res = await fetch(`${API_BASE}/book`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify(payload)
@@ -339,7 +340,7 @@ async function removeBooking(token) {
     if (!confirm('Cancel this appointment?')) return;
 
     try {
-        const res = await fetch("http://localhost:3000/api/cancel-appointment", {
+        const res = await fetch(`${API_BASE}/cancel-appointment`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ token, email })
@@ -367,7 +368,7 @@ async function renderBookings() {
     }
 
     try {
-        const res = await fetch(`http://localhost:3000/api/my-appointments?email=${encodeURIComponent(email)}`);
+        const res = await fetch(`${API_BASE}/my-appointments?email=${encodeURIComponent(email)}`);
         const bookings = await res.json();
 
         if (!bookings || bookings.length === 0) {
@@ -551,7 +552,7 @@ async function handleOtpRequest(event) {
     btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Sending...';
 
     try {
-        const res = await fetch("http://localhost:3000/api/request-otp", {
+        const res = await fetch(`${API_BASE}/request-otp`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ email })
@@ -585,7 +586,7 @@ async function handleOtpVerify(event) {
     btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Verifying...';
 
     try {
-        const res = await fetch("http://localhost:3000/api/verify-otp", {
+        const res = await fetch(`${API_BASE}/verify-otp`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ email, otp })
@@ -843,7 +844,7 @@ async function fetchVideoSlots() {
     if (!container) return;
 
     try {
-        const res = await fetch('http://localhost:3000/api/video-slots');
+        const res = await fetch(`${API_BASE}/video-slots`);
         availableVideoSlots = await res.json();
 
         if (!availableVideoSlots.length) {
@@ -928,7 +929,7 @@ async function bookVideoConsultation(event) {
     };
 
     try {
-        const res = await fetch('http://localhost:3000/api/book-video', {
+        const res = await fetch(`${API_BASE}/book-video`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(body)
@@ -963,7 +964,7 @@ async function renderVideoBookings() {
     if (!email) return;
 
     try {
-        const res = await fetch(`http://localhost:3000/api/my-video-appointments?email=${encodeURIComponent(email)}`);
+        const res = await fetch(`${API_BASE}/my-video-appointments?email=${encodeURIComponent(email)}`);
         const appts = await res.json();
 
         listEl.innerHTML = '';
